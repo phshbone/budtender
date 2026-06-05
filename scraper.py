@@ -1,6 +1,5 @@
 import asyncio
 import json
-import os
 from datetime import datetime
 from playwright.async_api import async_playwright
 
@@ -8,350 +7,247 @@ MAX_PRICE = 20  # Change to 25 if you want the wider net
 
 DISPENSARIES = [
     {
+        "name": "Kind Kush Rockaway",
+        "badge": "adult",
+        "label": "Adult Use (Med Discount)",
+        "color": "#e8c84a",
+        "base_url": "https://www.kindkushdispensary.com",
+        "menus": [
+            {"category": "flower", "url": "https://www.kindkushdispensary.com/menu/flower"},
+            {"category": "vape",   "url": "https://www.kindkushdispensary.com/menu/vaporizers"},
+        ],
+    },
+    {
         "name": "RISE Paterson",
-        "type": "medical",
-        "label": "Medical",
         "badge": "med",
-        "url_flower": "https://risecannabis.com/dispensaries/new-jersey/paterson/1317/medical-menu/?category=flower",
-        "url_vape": "https://risecannabis.com/dispensaries/new-jersey/paterson/1317/medical-menu/?category=vaporizers",
+        "label": "Medical",
+        "color": "#5dba7d",
         "base_url": "https://risecannabis.com",
-        "color": "#2d7a4f",
+        "menus": [
+            {"category": "flower", "url": "https://risecannabis.com/dispensary-menu/new-jersey/paterson/?category=flower&consumer_type=medical"},
+            {"category": "vape",   "url": "https://risecannabis.com/dispensary-menu/new-jersey/paterson/?category=vaporizers&consumer_type=medical"},
+        ],
     },
     {
         "name": "AYR Union",
-        "type": "medical",
-        "label": "Medical",
         "badge": "med",
-        "url_flower": "https://dutchie.com/dispensary/garden-state-dispensary-union",
-        "url_vape": "https://dutchie.com/dispensary/garden-state-dispensary-union",
-        "base_url": "https://dutchie.com",
-        "color": "#1a5276",
+        "label": "Medical",
+        "color": "#5b9bd5",
+        "base_url": "https://ayrwellness.com",
+        "menus": [
+            {"category": "flower", "url": "https://ayrwellness.com/dispensary/new-jersey/union/#menu/flower"},
+            {"category": "vape",   "url": "https://ayrwellness.com/dispensary/new-jersey/union/#menu/vaporizers"},
+        ],
     },
     {
         "name": "Apothecarium Maplewood",
-        "type": "medical",
-        "label": "Medical",
         "badge": "med",
-        "url_flower": "https://shop.apothecarium.com/maplewood/medical/menu/flower-6816",
-        "url_vape": "https://shop.apothecarium.com/maplewood/medical/menu/vaporizers-6819",
+        "label": "Medical",
+        "color": "#c1845a",
         "base_url": "https://shop.apothecarium.com",
-        "color": "#6b3a2a",
+        "menus": [
+            {"category": "flower", "url": "https://shop.apothecarium.com/maplewood/medical/menu/flower-6816"},
+            {"category": "vape",   "url": "https://shop.apothecarium.com/maplewood/medical/menu/vaporizers-6819"},
+        ],
     },
     {
         "name": "Ascend Wharton",
-        "type": "medical",
-        "label": "Medical",
         "badge": "med",
-        "url_flower": "https://dutchie.com/dispensary/wharton-new-jersey",
-        "url_vape": "https://dutchie.com/dispensary/wharton-new-jersey",
-        "base_url": "https://dutchie.com",
-        "color": "#4a235a",
+        "label": "Medical",
+        "color": "#9b7fd4",
+        "base_url": "https://ascendwellness.com",
+        "menus": [
+            {"category": "flower", "url": "https://ascendwellness.com/dispensary/wharton-nj/#menu/flower"},
+            {"category": "vape",   "url": "https://ascendwellness.com/dispensary/wharton-nj/#menu/vaporizers"},
+        ],
     },
-    {
-        "name": "Kind Kush Rockaway",
-        "type": "adult_use",
-        "label": "Adult Use (Med Discount)",
-        "badge": "adult",
-        "url_flower": "https://www.kindkushdispensary.com/menu",
-        "url_vape": "https://www.kindkushdispensary.com/menu",
-        "base_url": "https://www.kindkushdispensary.com",
-        "color": "#7d6608",
-    },
+]
+
+# All the CSS selector patterns we try across different menu platforms
+PRODUCT_CARD_SELECTORS = [
+    "[class*='ProductCard']",
+    "[class*='product-card']",
+    "[class*='product_card']",
+    "[class*='MenuItem']",
+    "[class*='menu-item']",
+    "[class*='menu_item']",
+    "[class*='ProductTile']",
+    "[class*='product-tile']",
+    "[data-testid*='product']",
+    "[data-testid*='menu-item']",
+    ".product",
+    "li[class*='product']",
+]
+
+PRICE_SELECTORS = [
+    "[class*='price']",
+    "[class*='Price']",
+    "[class*='cost']",
+    "[data-testid*='price']",
+    "span[class*='dollar']",
+]
+
+NAME_SELECTORS = [
+    "[class*='name']",
+    "[class*='Name']",
+    "[class*='title']",
+    "[class*='Title']",
+    "h1", "h2", "h3", "h4", "p[class*='name']",
 ]
 
 
 async def dismiss_age_gate(page):
-    """Try to click through common age gate patterns."""
     for selector in [
         "button:has-text('Yes')",
         "button:has-text('YES')",
         "button:has-text('I am 21')",
         "button:has-text('Enter')",
-        "a:has-text('Yes')",
+        "button:has-text('Continue')",
+        "a:has-text('Yes, I am')",
         "[data-testid='age-gate-confirm']",
         ".age-gate__confirm",
         "#age-gate-yes",
+        "button:has-text('I\\'m 21')",
     ]:
         try:
             btn = page.locator(selector).first
             if await btn.is_visible(timeout=2000):
                 await btn.click()
-                await page.wait_for_timeout(1500)
-                break
+                await page.wait_for_timeout(2000)
+                print("    ✅ Age gate dismissed")
+                return
         except Exception:
             continue
 
 
-async def scrape_rise(page, dispensary):
-    """Scrape RISE using iHeartJane embed — cleaner than HTML parse."""
-    products = []
-    categories = [
-        ("flower", dispensary["url_flower"]),
-        ("vape", dispensary["url_vape"]),
-    ]
-    for category, url in categories:
+async def scroll_to_load_all(page):
+    """Scroll down the full page to trigger lazy-loaded products."""
+    prev_height = 0
+    for _ in range(12):  # max 12 scroll attempts
+        await page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+        await page.wait_for_timeout(1500)
+        height = await page.evaluate("document.body.scrollHeight")
+        if height == prev_height:
+            break  # nothing new loaded
+        prev_height = height
+    # Scroll back to top
+    await page.evaluate("window.scrollTo(0, 0)")
+    await page.wait_for_timeout(500)
+
+
+async def extract_price(text):
+    """Pull the first dollar amount out of a text string."""
+    import re
+    matches = re.findall(r'\$?(\d+\.?\d*)', text.replace(',', ''))
+    for m in matches:
         try:
-            await page.goto(url, wait_until="domcontentloaded", timeout=30000)
-            await page.wait_for_timeout(3000)
+            val = float(m)
+            if 1 < val < 500:  # sanity check — skip weight/thc % numbers
+                return val
+        except Exception:
+            continue
+    return None
+
+
+async def scrape_dispensary(page, dispensary):
+    products = []
+
+    for menu in dispensary["menus"]:
+        category = menu["category"]
+        url = menu["url"]
+        print(f"    → {category}: {url}")
+
+        try:
+            await page.goto(url, wait_until="domcontentloaded", timeout=40000)
+            await page.wait_for_timeout(4000)
             await dismiss_age_gate(page)
             await page.wait_for_timeout(3000)
 
-            # Wait for product cards
-            await page.wait_for_selector(
-                "[class*='product'], [class*='Product'], .jane-product, [data-testid*='product']",
-                timeout=15000,
-            )
+            # Scroll to load all lazy content
+            await scroll_to_load_all(page)
 
-            cards = await page.query_selector_all(
-                "[class*='ProductCard'], [class*='product-card'], .product-card, [data-testid*='product-card']"
-            )
+            # Try each card selector until we find products
+            cards = []
+            for selector in PRODUCT_CARD_SELECTORS:
+                try:
+                    found = await page.query_selector_all(selector)
+                    if len(found) > 2:
+                        cards = found
+                        print(f"      Found {len(cards)} cards with: {selector}")
+                        break
+                except Exception:
+                    continue
+
+            if not cards:
+                print(f"      ⚠️  No cards found — page may need a different selector")
+                continue
 
             for card in cards:
                 try:
-                    # Price
-                    price_el = await card.query_selector(
-                        "[class*='price'], [class*='Price']"
-                    )
-                    if not price_el:
+                    # ── PRICE ──
+                    price_num = None
+                    for sel in PRICE_SELECTORS:
+                        try:
+                            el = await card.query_selector(sel)
+                            if el:
+                                text = await el.inner_text()
+                                price_num = await extract_price(text)
+                                if price_num:
+                                    break
+                        except Exception:
+                            continue
+
+                    if not price_num:
                         continue
-                    price_text = await price_el.inner_text()
-                    price_num = float(
-                        price_text.replace("$", "").replace(",", "").strip().split()[0]
-                    )
                     if price_num > MAX_PRICE:
                         continue
 
-                    # Name
-                    name_el = await card.query_selector(
-                        "[class*='name'], [class*='Name'], h3, h4"
-                    )
-                    name = await name_el.inner_text() if name_el else "Unknown Product"
+                    # ── NAME ──
+                    name = "Unknown Product"
+                    for sel in NAME_SELECTORS:
+                        try:
+                            el = await card.query_selector(sel)
+                            if el:
+                                t = (await el.inner_text()).strip()
+                                if t and len(t) > 2 and "$" not in t:
+                                    name = t
+                                    break
+                        except Exception:
+                            continue
 
-                    # Image
-                    img_el = await card.query_selector("img")
-                    img_src = await img_el.get_attribute("src") if img_el else ""
-
-                    # Link
-                    link_el = await card.query_selector("a")
-                    href = await link_el.get_attribute("href") if link_el else ""
-                    if href and not href.startswith("http"):
-                        href = dispensary["base_url"] + href
-
-                    products.append(
-                        {
-                            "name": name.strip(),
-                            "price": price_num,
-                            "category": category,
-                            "image": img_src,
-                            "link": href,
-                            "dispensary": dispensary["name"],
-                            "badge": dispensary["badge"],
-                            "label": dispensary["label"],
-                            "color": dispensary["color"],
-                        }
-                    )
-                except Exception:
-                    continue
-        except Exception as e:
-            print(f"  Error scraping {dispensary['name']} {category}: {e}")
-    return products
-
-
-async def scrape_dutchie(page, dispensary):
-    """Scrape Dutchie-powered dispensaries (AYR, Ascend)."""
-    products = []
-    try:
-        await page.goto(dispensary["url_flower"], wait_until="domcontentloaded", timeout=30000)
-        await page.wait_for_timeout(4000)
-        await dismiss_age_gate(page)
-        await page.wait_for_timeout(3000)
-
-        # Dutchie uses category filters in URL or sidebar
-        for category_name, category_filter in [("flower", "Flower"), ("vape", "Vaporizers")]:
-            try:
-                # Click category filter
-                filter_btn = page.locator(f"text={category_filter}").first
-                if await filter_btn.is_visible(timeout=5000):
-                    await filter_btn.click()
-                    await page.wait_for_timeout(2000)
-
-                cards = await page.query_selector_all(
-                    "[class*='product-card'], [class*='ProductCard'], [data-testid*='product']"
-                )
-
-                for card in cards:
+                    # ── IMAGE ──
+                    img_src = ""
                     try:
-                        price_el = await card.query_selector(
-                            "[class*='price'], [class*='Price']"
-                        )
-                        if not price_el:
-                            continue
-                        price_text = await price_el.inner_text()
-                        price_num = float(
-                            price_text.replace("$", "").replace(",", "").strip().split()[0]
-                        )
-                        if price_num > MAX_PRICE:
-                            continue
-
-                        name_el = await card.query_selector(
-                            "[class*='name'], [class*='Name'], h3, h4, p"
-                        )
-                        name = await name_el.inner_text() if name_el else "Unknown"
-
                         img_el = await card.query_selector("img")
-                        img_src = await img_el.get_attribute("src") if img_el else ""
-
-                        link_el = await card.query_selector("a")
-                        href = await link_el.get_attribute("href") if link_el else dispensary["url_flower"]
-                        if href and not href.startswith("http"):
-                            href = dispensary["base_url"] + href
-
-                        products.append({
-                            "name": name.strip(),
-                            "price": price_num,
-                            "category": category_name,
-                            "image": img_src,
-                            "link": href,
-                            "dispensary": dispensary["name"],
-                            "badge": dispensary["badge"],
-                            "label": dispensary["label"],
-                            "color": dispensary["color"],
-                        })
-                    except Exception:
-                        continue
-            except Exception as e:
-                print(f"  Dutchie category error {category_name}: {e}")
-    except Exception as e:
-        print(f"  Dutchie error {dispensary['name']}: {e}")
-    return products
-
-
-async def scrape_apothecarium(page, dispensary):
-    """Scrape Apothecarium's custom shop."""
-    products = []
-    for category_name, url in [
-        ("flower", dispensary["url_flower"]),
-        ("vape", dispensary["url_vape"]),
-    ]:
-        try:
-            await page.goto(url, wait_until="domcontentloaded", timeout=30000)
-            await page.wait_for_timeout(4000)
-            await dismiss_age_gate(page)
-            await page.wait_for_timeout(3000)
-
-            cards = await page.query_selector_all(
-                "[class*='product'], [class*='Product'], .product-item, [data-product]"
-            )
-
-            for card in cards:
-                try:
-                    price_el = await card.query_selector(
-                        "[class*='price'], [class*='Price'], .price"
-                    )
-                    if not price_el:
-                        continue
-                    price_text = await price_el.inner_text()
-                    digits = "".join(c for c in price_text if c.isdigit() or c == ".")
-                    if not digits:
-                        continue
-                    price_num = float(digits)
-                    if price_num > MAX_PRICE:
-                        continue
-
-                    name_el = await card.query_selector(
-                        "[class*='name'], [class*='title'], h3, h4, h2"
-                    )
-                    name = await name_el.inner_text() if name_el else "Unknown"
-
-                    img_el = await card.query_selector("img")
-                    img_src = await img_el.get_attribute("src") if img_el else ""
-                    if img_src and img_src.startswith("/"):
-                        img_src = dispensary["base_url"] + img_src
-
-                    link_el = await card.query_selector("a")
-                    href = await link_el.get_attribute("href") if link_el else url
-                    if href and href.startswith("/"):
-                        href = dispensary["base_url"] + href
-
-                    products.append({
-                        "name": name.strip(),
-                        "price": price_num,
-                        "category": category_name,
-                        "image": img_src,
-                        "link": href,
-                        "dispensary": dispensary["name"],
-                        "badge": dispensary["badge"],
-                        "label": dispensary["label"],
-                        "color": dispensary["color"],
-                    })
-                except Exception:
-                    continue
-        except Exception as e:
-            print(f"  Apothecarium error {category_name}: {e}")
-    return products
-
-
-async def scrape_kindkush(page, dispensary):
-    """Scrape Kind Kush's own site."""
-    products = []
-    for category_name, url in [
-        ("flower", dispensary["url_flower"]),
-        ("vape", dispensary["url_vape"]),
-    ]:
-        try:
-            await page.goto(url, wait_until="domcontentloaded", timeout=30000)
-            await page.wait_for_timeout(4000)
-            await dismiss_age_gate(page)
-            await page.wait_for_timeout(3000)
-
-            # Try to filter by category
-            for filter_text in ["Flower", "Vape", "Vaporizer", "Cartridge"]:
-                if (category_name == "flower" and filter_text == "Flower") or \
-                   (category_name == "vape" and filter_text in ["Vape", "Vaporizer", "Cartridge"]):
-                    try:
-                        btn = page.locator(f"text={filter_text}").first
-                        if await btn.is_visible(timeout=2000):
-                            await btn.click()
-                            await page.wait_for_timeout(1500)
+                        if img_el:
+                            src = await img_el.get_attribute("src") or ""
+                            srcset = await img_el.get_attribute("srcset") or ""
+                            # prefer srcset first image if available
+                            if srcset:
+                                src = srcset.split(",")[0].strip().split(" ")[0]
+                            if src and src.startswith("/"):
+                                src = dispensary["base_url"] + src
+                            img_src = src
                     except Exception:
                         pass
 
-            cards = await page.query_selector_all(
-                "[class*='product'], [class*='Product'], .menu-item, [data-testid*='product']"
-            )
-
-            for card in cards:
-                try:
-                    price_el = await card.query_selector(
-                        "[class*='price'], [class*='Price'], .price"
-                    )
-                    if not price_el:
-                        continue
-                    price_text = await price_el.inner_text()
-                    digits = "".join(c for c in price_text if c.isdigit() or c == ".")
-                    if not digits:
-                        continue
-                    price_num = float(digits)
-                    if price_num > MAX_PRICE:
-                        continue
-
-                    name_el = await card.query_selector(
-                        "[class*='name'], [class*='title'], h3, h4"
-                    )
-                    name = await name_el.inner_text() if name_el else "Unknown"
-
-                    img_el = await card.query_selector("img")
-                    img_src = await img_el.get_attribute("src") if img_el else ""
-
-                    link_el = await card.query_selector("a")
-                    href = await link_el.get_attribute("href") if link_el else url
-                    if href and href.startswith("/"):
-                        href = dispensary["base_url"] + href
+                    # ── LINK ──
+                    href = url
+                    try:
+                        link_el = await card.query_selector("a")
+                        if link_el:
+                            h = await link_el.get_attribute("href") or ""
+                            if h:
+                                if h.startswith("/"):
+                                    h = dispensary["base_url"] + h
+                                href = h
+                    except Exception:
+                        pass
 
                     products.append({
-                        "name": name.strip(),
+                        "name": name[:80],  # cap length
                         "price": price_num,
-                        "category": category_name,
+                        "category": category,
                         "image": img_src,
                         "link": href,
                         "dispensary": dispensary["name"],
@@ -359,64 +255,72 @@ async def scrape_kindkush(page, dispensary):
                         "label": dispensary["label"],
                         "color": dispensary["color"],
                     })
+
                 except Exception:
                     continue
+
+            print(f"      ✅ {len([p for p in products if p['category']==category])} products under ${MAX_PRICE}")
+
         except Exception as e:
-            print(f"  Kind Kush error {category_name}: {e}")
+            print(f"      ❌ Error: {e}")
+
     return products
 
 
 async def main():
     all_products = []
-    print(f"🌿 Budtender scrape started at {datetime.now().strftime('%Y-%m-%d %H:%M')}")
+    print(f"🌿 Budtender scrape started — {datetime.now().strftime('%Y-%m-%d %H:%M')}")
+    print(f"   Price ceiling: ${MAX_PRICE}")
 
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=True)
         context = await browser.new_context(
-            user_agent="Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1",
+            user_agent=(
+                "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) "
+                "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1"
+            ),
             viewport={"width": 390, "height": 844},
         )
 
         for dispensary in DISPENSARIES:
-            print(f"\n📍 Scraping {dispensary['name']}...")
+            print(f"\n📍 {dispensary['name']}")
             page = await context.new_page()
-
             try:
-                name = dispensary["name"]
-                if "RISE" in name:
-                    products = await scrape_rise(page, dispensary)
-                elif "AYR" in name or "Ascend" in name:
-                    products = await scrape_dutchie(page, dispensary)
-                elif "Apothecarium" in name:
-                    products = await scrape_apothecarium(page, dispensary)
-                elif "Kind Kush" in name:
-                    products = await scrape_kindkush(page, dispensary)
-                else:
-                    products = []
-
-                print(f"  ✅ Found {len(products)} deals under ${MAX_PRICE}")
-                all_products.extend(products)
+                found = await scrape_dispensary(page, dispensary)
+                all_products.extend(found)
             except Exception as e:
-                print(f"  ❌ Failed: {e}")
+                print(f"  ❌ Dispensary failed: {e}")
             finally:
                 await page.close()
 
         await browser.close()
 
-    # Sort by price ascending
-    all_products.sort(key=lambda x: x["price"])
+    # Deduplicate by name+dispensary
+    seen = set()
+    unique = []
+    for p in all_products:
+        key = (p["dispensary"], p["name"].lower())
+        if key not in seen:
+            seen.add(key)
+            unique.append(p)
+
+    # Sort cheapest first
+    unique.sort(key=lambda x: x["price"])
 
     output = {
-        "last_updated": datetime.now().strftime("%B %d, %Y at %I:%M %p"),
+        "last_updated": datetime.now().strftime("%b %d, %Y · %I:%M %p"),
         "max_price": MAX_PRICE,
-        "total_deals": len(all_products),
-        "products": all_products,
+        "total_deals": len(unique),
+        "products": unique,
     }
 
     with open("deals.json", "w") as f:
         json.dump(output, f, indent=2)
 
-    print(f"\n✅ Done! {len(all_products)} total deals saved to deals.json")
+    print(f"\n✅ Done — {len(unique)} products saved to deals.json")
+    for d in DISPENSARIES:
+        count = len([p for p in unique if p["dispensary"] == d["name"]])
+        print(f"   {d['name']}: {count} products")
 
 
 if __name__ == "__main__":
