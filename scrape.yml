@@ -1,0 +1,38 @@
+name: Budtender Scraper
+
+on:
+  schedule:
+    - cron: '0 0,4,9 * * *'  # Runs at midnight, 4am, 9am EST
+  workflow_dispatch:           # Lets you trigger it manually from Actions tab
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install playwright
+          playwright install chromium
+          playwright install-deps chromium
+
+      - name: Run scraper
+        run: python scraper.py
+
+      - name: Commit and push deals.json
+        run: |
+          git config --global user.name "Budtender Bot"
+          git config --global user.email "bot@budtender"
+          git add deals.json
+          git diff --staged --quiet || git commit -m "🌿 Deal update $(date +'%Y-%m-%d %H:%M')"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
