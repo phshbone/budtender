@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+    <h1>Local Budget Deals (<= $20)</h1>
+    <div id="dashboard"></div>
+    <script>
+        fetch('deals.json')
+            .then(res => res.json())
+            .then(data => {
+                const board = document.getElementById('dashboard');
+                data.forEach(d => {
+                    board.innerHTML += `<div>${d.store}: ${d.name} - $${d.price}</div>`;
+                });
+            });
+    </script>
+</body>
+</html>
