@@ -2,13 +2,12 @@ name: Budtender Scraper
 
 on:
   schedule:
-    - cron: '0 0,4,9 * * *'  # Runs at midnight, 4am, 9am EST
-  workflow_dispatch:           # Lets you trigger it manually from Actions tab
+    - cron: '1 0,6,12,16 * * *'
+  workflow_dispatch:
 
 jobs:
   scrape:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
