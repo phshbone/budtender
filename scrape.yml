@@ -8,11 +8,9 @@ on:
 jobs:
   scrape:
     runs-on: ubuntu-latest
-        runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repo
 
-      - name: Checkout repo
+    steps:
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Set up Python
