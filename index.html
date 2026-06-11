@@ -23,18 +23,27 @@
 
   html, body {
     height: 100%;
-    background: var(--bg);
+    background: #0a0a0a url('leather_bg.jpg');
+    background-size: 220px 220px;
+    background-repeat: repeat;
     color: var(--text);
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     overflow: hidden;
   }
 
-  /* ── HEADER (placeholder — customize me) ── */
+  /* ── HEADER (brushed metal + gold bands) ── */
   header {
-    padding: 38px 16px 32px;
-    text-align: center;
-    background: var(--header-bg);
-    border-bottom: 1px solid var(--border);
+    position: relative;
+    width: 100%;
+    aspect-ratio: 828 / 578;
+    background-image: url('header_bg.jpg');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 14px;
+    overflow: visible;
   }
 
   .logo {
@@ -59,8 +68,10 @@
     font-size: 104px;
     display: inline-block;
     position: relative;
-    top: 22px;
+    bottom: -28px;
     margin-right: -8px;
+    z-index: 5;
+    filter: drop-shadow(0 10px 8px rgba(0,0,0,0.65));
   }
 
   .logo .rest {
@@ -71,13 +82,19 @@
 
   /* ── MAIN SCROLLABLE STACK ── */
   .stack {
-    height: calc(100vh - 128px);
+    flex: 1;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     padding: 28px 18px 60px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    background: transparent;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
   }
 
   /* ── PLATE BUTTON (thin, original proportions) ── */
