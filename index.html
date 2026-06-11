@@ -88,14 +88,23 @@
     background-size: cover;
     background-position: center;
     border-radius: 10px;
+    border: none;
+    outline: none;
     cursor: pointer;
     -webkit-user-select: none;
     user-select: none;
+    -webkit-tap-highlight-color: transparent;
     box-shadow:
       0 6px 16px rgba(0,0,0,0.65),
       inset 0 1px 2px rgba(255,255,255,0.08),
       inset 0 -2px 4px rgba(0,0,0,0.5);
     transition: transform 0.15s ease;
+  }
+
+  .plate-btn:focus,
+  .plate-btn:active {
+    outline: none;
+    border: none;
   }
 
   .plate-btn:active {
