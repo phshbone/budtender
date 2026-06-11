@@ -1,598 +1,537 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>Budtender 🌿</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --bg: #0e0f0d;
-      --surface: #161814;
-      --surface2: #1e201b;
-      --border: #2a2d26;
-      --green: #7fff5f;
-      --green-dim: #3d7a2b;
-      --yellow: #e8c84a;
-      --text: #e8ead4;
-      --text-dim: #7a7d6e;
-      --med-color: #5dba7d;
-      --adult-color: #e8c84a;
-      --flower-color: #c17f3b;
-      --vape-color: #5b9bd5;
-      --radius: 16px;
-      --card-radius: 14px;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<title>Budtender</title>
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --header-bg: #000000;
+    --surface: #161814;
+    --border: #2a2d26;
+    --green: #4f9e63;
+    --green-dark: #18351f;
+    --yellow: #e8c84a;
+    --text: #e8ead4;
+    --text-dim: #7a7d6e;
+  }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  * { box-sizing: border-box; margin:0; padding:0; -webkit-tap-highlight-color: transparent; }
 
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      min-height: 100vh;
-      padding-bottom: 40px;
-    }
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    overflow: hidden;
+  }
 
-    /* ── HEADER ── */
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: rgba(14, 15, 13, 0.92);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border);
-      padding: 14px 16px 10px;
-    }
+  /* ── HEADER (placeholder — customize me) ── */
+  header {
+    padding: 18px 16px 14px;
+    text-align: center;
+    background: var(--header-bg);
+    border-bottom: 1px solid var(--border);
+  }
 
-    .header-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 12px;
-    }
+  .logo {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    font-family: Georgia, serif;
+    color: var(--yellow);
+  }
 
-    .logo {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800;
-      font-size: 22px;
-      letter-spacing: -0.5px;
-      color: var(--green);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
+  /* ── MAIN SCROLLABLE STACK ── */
+  .stack {
+    height: calc(100vh - 64px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 16px 14px 40px;
+  }
 
-    .logo span { font-size: 20px; }
+  /* ── DISPENSARY ITEM ── */
+  .disp-item {
+    margin-bottom: 16px;
+  }
 
-    .last-updated {
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      color: var(--text-dim);
-      text-align: right;
-      line-height: 1.4;
-    }
+  /* ── PUFFY LEATHER BUTTON ── */
+  .disp-btn {
+    position: relative;
+    width: 100%;
+    height: 92px;
+    border-radius: 20px;
+    background-size: cover;
+    background-position: center;
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+    box-shadow:
+      0 8px 18px rgba(0,0,0,0.6),
+      inset 0 2px 4px rgba(255,255,255,0.10),
+      inset 0 -5px 10px rgba(0,0,0,0.55),
+      inset 6px 0 10px -6px rgba(255,255,255,0.06),
+      inset -6px 0 10px -6px rgba(0,0,0,0.4);
+    transition: height 0.3s ease, box-shadow 0.2s ease;
+  }
 
-    .last-updated strong {
-      display: block;
-      color: var(--green);
-      font-size: 11px;
-    }
+  .disp-btn:active {
+    box-shadow:
+      0 4px 10px rgba(0,0,0,0.6),
+      inset 0 3px 8px rgba(0,0,0,0.6),
+      inset 0 -2px 4px rgba(255,255,255,0.05);
+  }
 
-    /* ── FILTERS ── */
-    .filters {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
+  .disp-item.open .disp-btn {
+    height: 76px;
+    border-radius: 20px 20px 0 0;
+  }
 
-    .filter-group {
-      display: flex;
-      gap: 6px;
-    }
+  .chevron {
+    position: absolute;
+    top: 10px;
+    right: 14px;
+    font-size: 16px;
+    color: var(--yellow);
+    opacity: 0.85;
+    transition: transform 0.3s ease;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+  }
 
-    .pill {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      font-weight: 500;
-      padding: 6px 12px;
-      border-radius: 100px;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      color: var(--text-dim);
-      cursor: pointer;
-      transition: all 0.15s ease;
-      white-space: nowrap;
-      user-select: none;
-    }
+  .disp-item.open .chevron {
+    transform: rotate(180deg);
+  }
 
-    .pill.active {
-      border-color: var(--green);
-      background: rgba(127, 255, 95, 0.12);
-      color: var(--green);
-    }
+  /* ── EXPAND PANEL ── */
+  .panel {
+    max-height: 0;
+    overflow: hidden;
+    background: #0e0f0d;
+    border-radius: 0 0 20px 20px;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.6);
+    transition: max-height 0.4s cubic-bezier(.4,0,.2,1);
+    display: flex;
+    flex-direction: column;
+  }
 
-    .pill.price-pill.active {
-      border-color: var(--yellow);
-      background: rgba(232, 200, 74, 0.12);
-      color: var(--yellow);
-    }
+  .disp-item.open .panel {
+    max-height: 480px;
+  }
 
-    /* ── STATS BAR ── */
-    .stats-bar {
-      display: flex;
-      gap: 8px;
-      padding: 10px 16px;
-      border-bottom: 1px solid var(--border);
-      overflow-x: auto;
-      scrollbar-width: none;
-    }
+  /* ── TABS ── */
+  .tabs {
+    display: flex;
+    flex-shrink: 0;
+    border-bottom: 1px solid var(--border);
+  }
 
-    .stats-bar::-webkit-scrollbar { display: none; }
+  .tab {
+    flex: 1;
+    text-align: center;
+    padding: 11px 0;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    background: var(--surface);
+    border: none;
+    border-bottom: 2px solid transparent;
+  }
 
-    .stat-chip {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      color: var(--text-dim);
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
+  .tab.active {
+    color: var(--green);
+    border-bottom: 2px solid var(--green);
+    background: #1c1f19;
+  }
 
-    .stat-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
+  /* ── WEIGHT SUB-PILLS ── */
+  .weight-row {
+    display: none;
+    flex-shrink: 0;
+    gap: 8px;
+    padding: 8px 12px;
+    background: #111310;
+    border-bottom: 1px solid var(--border);
+  }
 
-    /* ── DISPENSARY SECTIONS ── */
-    .section {
-      padding: 0 16px;
-      margin-top: 20px;
-    }
+  .weight-row.show {
+    display: flex;
+  }
 
-    .section-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 12px;
-    }
+  .weight-pill {
+    font-family: 'SF Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-dim);
+  }
 
-    .section-name {
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      font-size: 15px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+  .weight-pill.active {
+    border-color: var(--green);
+    background: rgba(79, 158, 99, 0.15);
+    color: var(--green);
+  }
 
-    .section-badge {
-      font-family: 'DM Mono', monospace;
-      font-size: 9px;
-      font-weight: 500;
-      padding: 3px 8px;
-      border-radius: 100px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
+  /* ── SWIPE CONTAINER ── */
+  .swipe-area {
+    flex-grow: 1;
+    position: relative;
+    overflow: hidden;
+    min-height: 340px;
+  }
 
-    .badge-med {
-      background: rgba(93, 186, 125, 0.15);
-      color: var(--med-color);
-      border: 1px solid rgba(93, 186, 125, 0.3);
-    }
+  .menu-frame-wrap {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    transition: transform 0.3s ease;
+  }
 
-    .badge-adult {
-      background: rgba(232, 200, 74, 0.15);
-      color: var(--adult-color);
-      border: 1px solid rgba(232, 200, 74, 0.3);
-    }
+  .menu-frame-wrap.flower { transform: translateX(0%); }
+  .menu-frame-wrap.vape   { transform: translateX(-100%); }
 
-    .section-count {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      color: var(--text-dim);
-    }
+  .frame-pane {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+  }
 
-    /* ── CARD GRID ── */
-    .card-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-    }
+  .frame-pane.flower { left: 0%; }
+  .frame-pane.vape   { left: 100%; }
 
-    .deal-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--card-radius);
-      overflow: hidden;
-      cursor: pointer;
-      transition: transform 0.15s ease, border-color 0.15s ease;
-      text-decoration: none;
-      display: block;
-      position: relative;
-    }
+  iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: var(--surface);
+  }
 
-    .deal-card:active {
-      transform: scale(0.97);
-    }
+  .frame-pane iframe.hidden-frame {
+    display: none;
+  }
 
-    .deal-card:hover {
-      border-color: #3a3d36;
-    }
+  /* ── FALLBACK OVERLAY ── */
+  .fallback {
+    position: absolute;
+    inset: 0;
+    background: rgba(10,11,9,0.97);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 24px;
+    gap: 14px;
+    z-index: 5;
+  }
 
-    .card-img-wrap {
-      position: relative;
-      width: 100%;
-      padding-top: 100%;
-      background: var(--surface2);
-      overflow: hidden;
-    }
+  .fallback.show { display: flex; }
 
-    .card-img-wrap img {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: opacity 0.3s ease;
-    }
+  .fallback p {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.5;
+    max-width: 280px;
+  }
 
-    .card-img-wrap img.loading {
-      opacity: 0;
-    }
+  .fallback a {
+    background: var(--green);
+    color: #0e0f0d;
+    font-weight: 800;
+    font-size: 14px;
+    padding: 12px 28px;
+    border-radius: 100px;
+    text-decoration: none;
+  }
 
-    .img-placeholder {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 32px;
-    }
+  .fallback .icon { font-size: 36px; }
 
-    .cat-tag {
-      position: absolute;
-      top: 8px;
-      left: 8px;
-      font-family: 'DM Mono', monospace;
-      font-size: 9px;
-      font-weight: 500;
-      padding: 3px 7px;
-      border-radius: 6px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .cat-flower {
-      background: rgba(193, 127, 59, 0.85);
-      color: #fff;
-    }
-
-    .cat-vape {
-      background: rgba(91, 155, 213, 0.85);
-      color: #fff;
-    }
-
-    .card-body {
-      padding: 10px 10px 11px;
-    }
-
-    .card-price {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800;
-      font-size: 20px;
-      color: var(--green);
-      line-height: 1;
-      margin-bottom: 5px;
-    }
-
-    .card-name {
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--text);
-      line-height: 1.35;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    /* ── EMPTY STATE ── */
-    .empty-state {
-      text-align: center;
-      padding: 60px 32px;
-      color: var(--text-dim);
-    }
-
-    .empty-state .icon {
-      font-size: 48px;
-      margin-bottom: 16px;
-      display: block;
-    }
-
-    .empty-state h3 {
-      font-family: 'Syne', sans-serif;
-      font-size: 18px;
-      color: var(--text);
-      margin-bottom: 8px;
-    }
-
-    .empty-state p {
-      font-size: 13px;
-      line-height: 1.6;
-    }
-
-    /* ── LOADING ── */
-    .loading-screen {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 60vh;
-      gap: 16px;
-    }
-
-    .spinner {
-      width: 32px;
-      height: 32px;
-      border: 2px solid var(--border);
-      border-top-color: var(--green);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    .loading-text {
-      font-family: 'DM Mono', monospace;
-      font-size: 12px;
-      color: var(--text-dim);
-    }
-
-    /* ── NO DEALS ── */
-    .no-deals-section {
-      background: var(--surface);
-      border: 1px dashed var(--border);
-      border-radius: var(--card-radius);
-      padding: 20px;
-      text-align: center;
-      color: var(--text-dim);
-      font-size: 12px;
-      font-family: 'DM Mono', monospace;
-    }
-
-    /* ── REFRESH BTN ── */
-    .refresh-hint {
-      text-align: center;
-      padding: 24px 16px 0;
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      color: var(--text-dim);
-    }
-
-    .refresh-hint a {
-      color: var(--green);
-      text-decoration: none;
-    }
-  </style>
+  /* ── HINT ── */
+  .swipe-hint {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    color: var(--text-dim);
+    background: rgba(0,0,0,0.5);
+    padding: 4px 10px;
+    border-radius: 100px;
+    pointer-events: none;
+    z-index: 4;
+    transition: opacity 0.4s ease;
+    font-family: 'SF Mono', monospace;
+  }
+</style>
 </head>
 <body>
 
 <header>
-  <div class="header-top">
-    <div class="logo"><span>🌿</span> Budtender</div>
-    <div class="last-updated" id="lastUpdated">
-      <strong>Loading...</strong>
-    </div>
-  </div>
-  <div class="filters">
-    <div class="filter-group">
-      <button class="pill active" data-filter="all">All</button>
-      <button class="pill" data-filter="flower">🌸 Flower</button>
-      <button class="pill" data-filter="vape">💨 Vape</button>
-    </div>
-    <div class="filter-group">
-      <button class="pill price-pill active" data-price="20">Under $20</button>
-      <button class="pill price-pill" data-price="25">Under $25</button>
-      <button class="pill price-pill" data-price="30">Under $30</button>
-    </div>
-  </div>
+  <div class="logo">Budtender</div>
 </header>
 
-<div class="stats-bar" id="statsBar"></div>
+<div class="stack" id="stack">
 
-<div id="app">
-  <div class="loading-screen">
-    <div class="spinner"></div>
-    <div class="loading-text">fetching deals...</div>
+  <!-- KIND KUSH -->
+  <div class="disp-item" data-id="kindkush">
+    <div class="disp-btn" style="background-image:url('img/kindkush.jpg')">
+      <div class="chevron">▾</div>
+    </div>
+    <div class="panel">
+      <div class="tabs">
+        <button class="tab active" data-tab="flower">Flower</button>
+        <button class="tab" data-tab="vape">Vape</button>
+      </div>
+      <div class="weight-row" data-weights="vape">
+        <button class="weight-pill active" data-weight="1g">1g Cart</button>
+        <button class="weight-pill" data-weight="0.5g">0.5g Cart</button>
+      </div>
+      <div class="swipe-area">
+        <div class="menu-frame-wrap flower">
+          <div class="frame-pane flower">
+            <iframe loading="lazy" data-src="https://www.kindkushdispensary.com/collection/flower?sort=customMinPriceAsc&page=1&customSize=3.5+G"></iframe>
+          </div>
+          <div class="frame-pane vape">
+            <iframe class="w-1g" loading="lazy" data-src="https://www.kindkushdispensary.com/collection/cartridge?page=1&sort=customMinPriceAsc&customSize=1+G"></iframe>
+            <iframe class="w-0.5g hidden-frame" loading="lazy" data-src="https://www.kindkushdispensary.com/collection/cartridge?page=1&sort=customMinPriceAsc&customSize=0.5+G"></iframe>
+          </div>
+        </div>
+        <div class="fallback">
+          <div class="icon">🌿</div>
+          <p>This menu doesn't allow embedding. Tap below to open it — you'll come right back.</p>
+          <a href="#" target="_blank" rel="noopener">Open Menu</a>
+        </div>
+        <div class="swipe-hint">← swipe for vape / flower →</div>
+      </div>
+    </div>
   </div>
-</div>
 
-<div class="refresh-hint">
-  Refreshes automatically 3× daily &nbsp;·&nbsp;
-  <a href="javascript:location.reload()">tap to reload</a>
+  <!-- RISE -->
+  <div class="disp-item" data-id="rise">
+    <div class="disp-btn" style="background-image:url('img/rise.jpg')">
+      <div class="chevron">▾</div>
+    </div>
+    <div class="panel">
+      <div class="tabs">
+        <button class="tab active" data-tab="flower">Flower</button>
+        <button class="tab" data-tab="vape">Vape</button>
+      </div>
+      <div class="weight-row" data-weights="vape">
+        <button class="weight-pill active" data-weight="1g">1g Cart</button>
+        <button class="weight-pill" data-weight="0.5g">0.5g Cart</button>
+      </div>
+      <div class="swipe-area">
+        <div class="menu-frame-wrap flower">
+          <div class="frame-pane flower">
+            <iframe loading="lazy" data-src="https://risecannabis.com/dispensaries/new-jersey/paterson/1317/medical-menu/?refinementList[root_types][]=flower&refinementList[available_weights][]=eighth%20ounce&currentSort=by-price-"></iframe>
+          </div>
+          <div class="frame-pane vape">
+            <iframe class="w-1g" loading="lazy" data-src="https://risecannabis.com/dispensaries/new-jersey/paterson/1317/medical-menu/?refinementList[root_types][]=vape&refinementList[available_weights][]=gram&currentSort=by-price-"></iframe>
+            <iframe class="w-0.5g hidden-frame" loading="lazy" data-src="https://risecannabis.com/dispensaries/new-jersey/paterson/1317/medical-menu/?refinementList[root_types][]=vape&refinementList[available_weights][]=half%20gram&currentSort=by-price-"></iframe>
+          </div>
+        </div>
+        <div class="fallback">
+          <div class="icon">🌿</div>
+          <p>This menu doesn't allow embedding. Tap below to open it — you'll come right back.</p>
+          <a href="#" target="_blank" rel="noopener">Open Menu</a>
+        </div>
+        <div class="swipe-hint">← swipe for vape / flower →</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- APOTHECARIUM -->
+  <div class="disp-item" data-id="apothecarium">
+    <div class="disp-btn" style="background-image:url('img/apothecarium.jpg')">
+      <div class="chevron">▾</div>
+    </div>
+    <div class="panel">
+      <div class="tabs">
+        <button class="tab active" data-tab="flower">Flower</button>
+        <button class="tab" data-tab="vape">Vape</button>
+      </div>
+      <div class="swipe-area">
+        <div class="menu-frame-wrap flower">
+          <div class="frame-pane flower">
+            <iframe loading="lazy" data-src="https://shop.apothecarium.com/maplewood/medical/menu/flower-17?filters=%7B%22category%22%3A%5B17%5D%2C%22totalSize%22%3A%5B243139977%5D%7D&sorting=2"></iframe>
+          </div>
+          <div class="frame-pane vape">
+            <iframe loading="lazy" data-src="https://shop.apothecarium.com/maplewood/medical/menu?filters=%7B%22category%22%3A%5B18%5D%2C%22totalSize%22%3A%5B-1627035471%5D%7D&sorting=2"></iframe>
+          </div>
+        </div>
+        <div class="fallback">
+          <div class="icon">🌿</div>
+          <p>This menu doesn't allow embedding. Tap below to open it — you'll come right back.</p>
+          <a href="#" target="_blank" rel="noopener">Open Menu</a>
+        </div>
+        <div class="swipe-hint">← swipe for vape / flower →</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AYR -->
+  <div class="disp-item" data-id="ayr">
+    <div class="disp-btn" style="background-image:url('img/ayr.jpg')">
+      <div class="chevron">▾</div>
+    </div>
+    <div class="panel">
+      <div class="tabs">
+        <button class="tab active" data-tab="flower">Flower</button>
+        <button class="tab" data-tab="vape">Vape</button>
+      </div>
+      <div class="weight-row" data-weights="vape">
+        <button class="weight-pill active" data-weight="1g">1g Cart</button>
+        <button class="weight-pill" data-weight="0.5g">0.5g Cart</button>
+      </div>
+      <div class="swipe-area">
+        <div class="menu-frame-wrap flower">
+          <div class="frame-pane flower">
+            <iframe loading="lazy" data-src="https://ayrdispensaries.com/new-jersey/union-medical/shop/?dtche%5Bweight%5D=1-8oz&dtche%5Bsortby%5D=pricelowtohigh&dtche%5Bcategory%5D=flower"></iframe>
+          </div>
+          <div class="frame-pane vape">
+            <iframe class="w-1g" loading="lazy" data-src="https://ayrdispensaries.com/new-jersey/union-medical/shop/?dtche%5Bweight%5D=1g&dtche%5Bsortby%5D=pricelowtohigh&dtche%5Bcategory%5D=vaporizers"></iframe>
+            <iframe class="w-0.5g hidden-frame" loading="lazy" data-src="https://ayrdispensaries.com/new-jersey/union-medical/shop/?dtche%5Bweight%5D=0.5g&dtche%5Bsortby%5D=pricelowtohigh&dtche%5Bcategory%5D=vaporizers"></iframe>
+          </div>
+        </div>
+        <div class="fallback">
+          <div class="icon">🌿</div>
+          <p>This menu doesn't allow embedding. Tap below to open it — you'll come right back.</p>
+          <a href="#" target="_blank" rel="noopener">Open Menu</a>
+        </div>
+        <div class="swipe-hint">← swipe for vape / flower →</div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <script>
-  const DISPENSARY_ORDER = [
-    "Kind Kush Rockaway",
-    "RISE Bloomfield",
-    "RISE Paterson",
-    "AYR Union",
-    "Apothecarium Maplewood",
-    "Apothecarium Lodi",
-    "Ascend Wharton"
-  ];
+  const items = document.querySelectorAll('.disp-item');
 
-  let allProducts = [];
-  let activeFilter = 'all';
-  let activePrice = 20;
+  items.forEach(item => {
+    const btn = item.querySelector('.disp-btn');
+    btn.addEventListener('click', () => {
+      const isOpen = item.classList.contains('open');
 
-  // ── FETCH DATA ──
-  async function loadDeals() {
-    try {
-      const res = await fetch('deals.json?t=' + Date.now());
-      const data = await res.json();
-      allProducts = data.products || [];
+      items.forEach(i => i.classList.remove('open'));
 
-      const lu = document.getElementById('lastUpdated');
-      lu.innerHTML = `<strong>${allProducts.length} deals found</strong>${data.last_updated}`;
+      if (!isOpen) {
+        item.classList.add('open');
+        const panel = item.querySelector('.panel');
+        const activeTab = panel.querySelector('.tab.active').dataset.tab;
+        loadActiveFrame(panel, activeTab);
 
-      renderStats();
-      renderDeals();
-    } catch (e) {
-      document.getElementById('app').innerHTML = `
-        <div class="empty-state">
-          <span class="icon">⚠️</span>
-          <h3>Couldn't load deals</h3>
-          <p>deals.json not found yet.<br>Run the scraper first or wait for the first scheduled run.</p>
-        </div>`;
+        const hint = panel.querySelector('.swipe-hint');
+        if (hint) {
+          hint.style.opacity = '1';
+          setTimeout(() => { hint.style.opacity = '0'; }, 3000);
+        }
+
+        // Scroll this item into view
+        setTimeout(() => {
+          item.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      }
+    });
+  });
+
+  function getActiveWeight(panel) {
+    const wRow = panel.querySelector('.weight-row');
+    if (!wRow) return '1g';
+    const active = wRow.querySelector('.weight-pill.active');
+    return active ? active.dataset.weight : '1g';
+  }
+
+  function loadActiveFrame(panel, tab) {
+    const pane = panel.querySelector(`.frame-pane.${tab}`);
+    let frame;
+
+    if (tab === 'vape' && panel.querySelector('.weight-row')) {
+      const weight = getActiveWeight(panel);
+      frame = pane.querySelector(`iframe.w-${weight}`);
+      pane.querySelectorAll('iframe').forEach(f => f.classList.add('hidden-frame'));
+      frame.classList.remove('hidden-frame');
+    } else {
+      frame = pane.querySelector('iframe');
+    }
+
+    const fallback = panel.querySelector('.fallback');
+    const fallbackLink = fallback.querySelector('a');
+    fallback.classList.remove('show');
+    fallbackLink.href = frame.dataset.src;
+
+    if (!frame.src && frame.dataset.src) {
+      frame.src = frame.dataset.src;
+      frame.addEventListener('error', () => fallback.classList.add('show'));
     }
   }
 
-  // ── STATS BAR ──
-  function renderStats() {
-    const dispensaries = [...new Set(allProducts.map(p => p.dispensary))];
-    const statColors = {
-      'Kind Kush Rockaway': '#e8c84a',
-      'RISE Paterson': '#5dba7d',
-      'AYR Union': '#5b9bd5',
-      'Apothecarium Maplewood': '#c1845a',
-      'Ascend Wharton': '#9b7fd4'
-    };
+  document.querySelectorAll('.panel').forEach(panel => {
+    const tabs = panel.querySelectorAll('.tab');
+    const wrap = panel.querySelector('.menu-frame-wrap');
+    const fallback = panel.querySelector('.fallback');
+    const weightRow = panel.querySelector('.weight-row');
 
-    const bar = document.getElementById('statsBar');
-    bar.innerHTML = dispensaries.map(d => {
-      const count = allProducts.filter(p => p.dispensary === d).length;
-      const color = statColors[d] || '#7a7d6e';
-      return `<div class="stat-chip">
-        <div class="stat-dot" style="background:${color}"></div>
-        ${d.split(' ')[0]} · ${count}
-      </div>`;
-    }).join('');
-  }
+    function setTab(tab) {
+      tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+      wrap.classList.toggle('flower', tab === 'flower');
+      wrap.classList.toggle('vape', tab === 'vape');
+      fallback.classList.remove('show');
 
-  // ── RENDER DEALS ──
-  function renderDeals() {
-    const filtered = allProducts.filter(p => {
-      const catMatch = activeFilter === 'all' || p.category === activeFilter;
-      const priceMatch = p.price <= activePrice;
-      return catMatch && priceMatch;
-    });
-
-    const app = document.getElementById('app');
-
-    if (filtered.length === 0) {
-      app.innerHTML = `
-        <div class="empty-state">
-          <span class="icon">🍃</span>
-          <h3>No deals right now</h3>
-          <p>Nothing under $${activePrice} for that category.<br>Try $25 or check back after the next scrape.</p>
-        </div>`;
-      return;
-    }
-
-    // Group by dispensary
-    const byDispensary = {};
-    DISPENSARY_ORDER.forEach(d => { byDispensary[d] = []; });
-    filtered.forEach(p => {
-      if (!byDispensary[p.dispensary]) byDispensary[p.dispensary] = [];
-      byDispensary[p.dispensary].push(p);
-    });
-
-    const dispensaryColors = {
-      'Kind Kush Rockaway': '#e8c84a',
-      'RISE Bloomfield': '#4dab6d',
-      'RISE Paterson': '#5dba7d',
-      'AYR Union': '#5b9bd5',
-      'Apothecarium Maplewood': '#c1845a',
-      'Apothecarium Lodi': '#d4956a',
-      'Ascend Wharton': '#9b7fd4'
-    };
-
-    let html = '';
-
-    DISPENSARY_ORDER.forEach(dName => {
-      const products = byDispensary[dName];
-      if (!products) return;
-
-      const badgeClass = products[0]?.badge === 'med' ? 'badge-med' : 'badge-adult';
-      const badgeLabel = products[0]?.label || '';
-      const dotColor = dispensaryColors[dName] || '#7a7d6e';
-      const count = products.length;
-
-      html += `<div class="section">
-        <div class="section-header">
-          <div class="section-name">
-            <div class="stat-dot" style="background:${dotColor};width:9px;height:9px;border-radius:50%;flex-shrink:0"></div>
-            ${dName}
-            <span class="section-badge ${badgeClass}">${badgeLabel}</span>
-          </div>
-          <div class="section-count">${count} deal${count !== 1 ? 's' : ''}</div>
-        </div>`;
-
-      if (count === 0) {
-        html += `<div class="no-deals-section">no deals under $${activePrice}</div>`;
-      } else {
-        html += `<div class="card-grid">`;
-        products.forEach(p => {
-          const catClass = p.category === 'flower' ? 'cat-flower' : 'cat-vape';
-          const catLabel = p.category === 'flower' ? '🌸 Flower' : '💨 Vape';
-          const emoji = p.category === 'flower' ? '🌿' : '💨';
-          const hasImg = p.image && p.image.length > 5;
-
-          html += `<a class="deal-card" href="${p.link || '#'}" target="_blank" rel="noopener">
-            <div class="card-img-wrap">
-              ${hasImg
-                ? `<img src="${p.image}" alt="${p.name}" class="loading" onload="this.classList.remove('loading')" onerror="this.style.display='none'" />`
-                : ''}
-              <div class="img-placeholder">${emoji}</div>
-              <div class="cat-tag ${catClass}">${catLabel}</div>
-            </div>
-            <div class="card-body">
-              <div class="card-price">$${p.price.toFixed(0)}</div>
-              <div class="card-name">${p.name}</div>
-            </div>
-          </a>`;
-        });
-        html += `</div>`;
+      if (weightRow) {
+        weightRow.classList.toggle('show', tab === 'vape');
       }
 
-      html += `</div>`;
+      loadActiveFrame(panel, tab);
+    }
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', (e) => {
+        e.stopPropagation();
+        setTab(tab.dataset.tab);
+      });
     });
 
-    app.innerHTML = html;
-  }
+    if (weightRow) {
+      weightRow.querySelectorAll('.weight-pill').forEach(pill => {
+        pill.addEventListener('click', (e) => {
+          e.stopPropagation();
+          weightRow.querySelectorAll('.weight-pill').forEach(p => p.classList.remove('active'));
+          pill.classList.add('active');
+          loadActiveFrame(panel, 'vape');
+        });
+      });
+    }
 
-  // ── FILTER CONTROLS ──
-  document.querySelectorAll('.pill[data-filter]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.pill[data-filter]').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      activeFilter = btn.dataset.filter;
-      renderDeals();
-    });
+    // Swipe detection: flower <-> vape
+    let startX = 0;
+    let startY = 0;
+    const swipeArea = panel.querySelector('.swipe-area');
+
+    swipeArea.addEventListener('touchstart', e => {
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+    }, { passive: true });
+
+    swipeArea.addEventListener('touchend', e => {
+      const dx = e.changedTouches[0].clientX - startX;
+      const dy = e.changedTouches[0].clientY - startY;
+      if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy)) {
+        const activeTab = panel.querySelector('.tab.active').dataset.tab;
+        if (dx < 0 && activeTab === 'flower') setTab('vape');
+        if (dx > 0 && activeTab === 'vape') setTab('flower');
+      }
+    }, { passive: true });
   });
-
-  document.querySelectorAll('.pill[data-price]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.pill[data-price]').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      activePrice = parseInt(btn.dataset.price);
-      renderDeals();
-    });
-  });
-
-  // ── INIT ──
-  loadDeals();
 </script>
+
 </body>
 </html>
