@@ -6,6 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <title>Budtender</title>
+<link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Tangerine:wght@700&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #0a0a0a;
@@ -13,7 +14,7 @@
     --surface: #161814;
     --border: #2a2d26;
     --green: #4f9e63;
-    --gold: #c9a84c;
+    --gold: #b6a06a;
     --text: #e8ead4;
     --text-dim: #7a7d6e;
   }
@@ -30,23 +31,47 @@
 
   /* ── HEADER (placeholder — customize me) ── */
   header {
-    padding: 18px 16px 14px;
+    padding: 38px 16px 32px;
     text-align: center;
     background: var(--header-bg);
     border-bottom: 1px solid var(--border);
   }
 
   .logo {
-    font-size: 28px;
-    font-weight: 800;
+    position: relative;
+    line-height: 1;
+    font-size: 56px;
     letter-spacing: 1px;
-    font-family: Georgia, serif;
-    color: var(--gold);
+    background: linear-gradient(180deg, #fff8d6 0%, #f3d77e 20%, #d4af37 45%, #a3791f 70%, #f0dca0 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    text-shadow:
+      0 1px 0 rgba(255,255,255,0.35),
+      0 2px 2px rgba(0,0,0,0.45),
+      0 6px 10px rgba(0,0,0,0.55),
+      0 12px 22px rgba(0,0,0,0.45);
+  }
+
+  .logo .dropcap {
+    font-family: 'Alex Brush', cursive;
+    font-size: 104px;
+    display: inline-block;
+    position: relative;
+    top: 22px;
+    margin-right: -8px;
+  }
+
+  .logo .rest {
+    font-family: 'Tangerine', cursive;
+    font-weight: 700;
+    font-size: 86px;
   }
 
   /* ── MAIN SCROLLABLE STACK ── */
   .stack {
-    height: calc(100vh - 64px);
+    height: calc(100vh - 128px);
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     padding: 28px 18px 60px;
@@ -128,7 +153,7 @@
     flex-shrink: 0;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     padding: 14px 16px;
     background: #000;
     border-bottom: 1px solid var(--border);
@@ -142,18 +167,33 @@
     letter-spacing: 0.5px;
   }
 
-  .close-btn {
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-size: 16px;
+  .close-bar {
+    flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 10px;
+    padding: 14px;
+    background: #000;
+    border-top: 1px solid var(--border);
+    color: var(--gold);
+    font-family: Georgia, serif;
+    font-size: 14px;
+    letter-spacing: 1px;
     cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  .close-bar .arrow {
+    font-size: 16px;
+  }
+
+  .leaf-icon {
+    width: 26px;
+    height: 26px;
+    display: block;
+    filter: drop-shadow(0 1px 1px rgba(0,0,0,0.6));
   }
 
   /* ── TABS ── */
@@ -288,6 +328,14 @@
 
   .fallback .icon { font-size: 36px; }
 
+
+  /* ── GILDED LEAF ICON ── */
+  .leaf-icon {
+    width: 30px;
+    height: 30px;
+    display: block;
+  }
+
   /* ── HINT ── */
   .swipe-hint {
     position: absolute;
@@ -309,24 +357,24 @@
 <body>
 
 <header>
-  <div class="logo">Budtender</div>
+  <div class="logo"><span class="dropcap">B</span><span class="rest">udtender</span></div>
 </header>
 
 <div class="stack" id="stack">
 
-  <div class="plate-btn" data-id="kindkush" style="background-image:url('img/kindkush_thin.jpg')"></div>
+  <div class="plate-btn" data-id="kindkush" style="background-image:url('kindkush_thin.jpg')"></div>
 
   <div class="divider"><span class="glyph">❖</span></div>
 
-  <div class="plate-btn" data-id="rise" style="background-image:url('img/rise_thin.jpg')"></div>
+  <div class="plate-btn" data-id="rise" style="background-image:url('rise_thin.jpg')"></div>
 
   <div class="divider"><span class="glyph">❖</span></div>
 
-  <div class="plate-btn" data-id="apothecarium" style="background-image:url('img/apothecarium_thin.jpg')"></div>
+  <div class="plate-btn" data-id="apothecarium" style="background-image:url('apothecarium_thin.jpg')"></div>
 
   <div class="divider"><span class="glyph">❖</span></div>
 
-  <div class="plate-btn" data-id="ayr" style="background-image:url('img/ayr_thin.jpg')"></div>
+  <div class="plate-btn" data-id="ayr" style="background-image:url('ayr_thin.jpg')"></div>
 
 </div>
 
@@ -336,7 +384,7 @@
 <div class="overlay" data-id="kindkush">
   <div class="overlay-header">
     <div class="overlay-title">Kind Kush — Rockaway</div>
-    <div class="close-btn">✕</div>
+    
   </div>
   <div class="tabs">
     <button class="tab active" data-tab="flower">Flower</button>
@@ -363,13 +411,31 @@
     </div>
     <div class="swipe-hint">← swipe for vape / flower →</div>
   </div>
+  <div class="close-bar">
+    <svg class="leaf-icon" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#f0dca0"/>
+          <stop offset="50%" stop-color="#b6a06a"/>
+          <stop offset="100%" stop-color="#8a7340"/>
+        </linearGradient>
+      </defs>
+      <g fill="url(#goldGrad)" stroke="#6e5a30" stroke-width="0.6">
+        <path d="M32 14 C 24 18, 22 30, 32 40 C 42 30, 40 18, 32 14 Z"/>
+        <path d="M32 22 C 18 22, 8 30, 10 42 C 22 42, 30 34, 32 22 Z"/>
+        <path d="M32 22 C 46 22, 56 30, 54 42 C 42 42, 34 34, 32 22 Z"/>
+        <path d="M32 40 L 30 50 Q 32 53 34 50 Z"/>
+      </g>
+    </svg>
+    <span>Close</span>
+  </div>
 </div>
 
 <!-- RISE -->
 <div class="overlay" data-id="rise">
   <div class="overlay-header">
     <div class="overlay-title">RISE — Paterson</div>
-    <div class="close-btn">✕</div>
+    
   </div>
   <div class="tabs">
     <button class="tab active" data-tab="flower">Flower</button>
@@ -396,13 +462,31 @@
     </div>
     <div class="swipe-hint">← swipe for vape / flower →</div>
   </div>
+  <div class="close-bar">
+    <svg class="leaf-icon" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#f0dca0"/>
+          <stop offset="50%" stop-color="#b6a06a"/>
+          <stop offset="100%" stop-color="#8a7340"/>
+        </linearGradient>
+      </defs>
+      <g fill="url(#goldGrad)" stroke="#6e5a30" stroke-width="0.6">
+        <path d="M32 14 C 24 18, 22 30, 32 40 C 42 30, 40 18, 32 14 Z"/>
+        <path d="M32 22 C 18 22, 8 30, 10 42 C 22 42, 30 34, 32 22 Z"/>
+        <path d="M32 22 C 46 22, 56 30, 54 42 C 42 42, 34 34, 32 22 Z"/>
+        <path d="M32 40 L 30 50 Q 32 53 34 50 Z"/>
+      </g>
+    </svg>
+    <span>Close</span>
+  </div>
 </div>
 
 <!-- APOTHECARIUM -->
 <div class="overlay" data-id="apothecarium">
   <div class="overlay-header">
     <div class="overlay-title">Apothecarium — Maplewood</div>
-    <div class="close-btn">✕</div>
+    
   </div>
   <div class="tabs">
     <button class="tab active" data-tab="flower">Flower</button>
@@ -424,13 +508,31 @@
     </div>
     <div class="swipe-hint">← swipe for vape / flower →</div>
   </div>
+  <div class="close-bar">
+    <svg class="leaf-icon" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#f0dca0"/>
+          <stop offset="50%" stop-color="#b6a06a"/>
+          <stop offset="100%" stop-color="#8a7340"/>
+        </linearGradient>
+      </defs>
+      <g fill="url(#goldGrad)" stroke="#6e5a30" stroke-width="0.6">
+        <path d="M32 14 C 24 18, 22 30, 32 40 C 42 30, 40 18, 32 14 Z"/>
+        <path d="M32 22 C 18 22, 8 30, 10 42 C 22 42, 30 34, 32 22 Z"/>
+        <path d="M32 22 C 46 22, 56 30, 54 42 C 42 42, 34 34, 32 22 Z"/>
+        <path d="M32 40 L 30 50 Q 32 53 34 50 Z"/>
+      </g>
+    </svg>
+    <span>Close</span>
+  </div>
 </div>
 
 <!-- AYR -->
 <div class="overlay" data-id="ayr">
   <div class="overlay-header">
     <div class="overlay-title">AYR — Union</div>
-    <div class="close-btn">✕</div>
+    
   </div>
   <div class="tabs">
     <button class="tab active" data-tab="flower">Flower</button>
@@ -457,6 +559,24 @@
     </div>
     <div class="swipe-hint">← swipe for vape / flower →</div>
   </div>
+  <div class="close-bar">
+    <svg class="leaf-icon" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#f0dca0"/>
+          <stop offset="50%" stop-color="#b6a06a"/>
+          <stop offset="100%" stop-color="#8a7340"/>
+        </linearGradient>
+      </defs>
+      <g fill="url(#goldGrad)" stroke="#6e5a30" stroke-width="0.6">
+        <path d="M32 14 C 24 18, 22 30, 32 40 C 42 30, 40 18, 32 14 Z"/>
+        <path d="M32 22 C 18 22, 8 30, 10 42 C 22 42, 30 34, 32 22 Z"/>
+        <path d="M32 22 C 46 22, 56 30, 54 42 C 42 42, 34 34, 32 22 Z"/>
+        <path d="M32 40 L 30 50 Q 32 53 34 50 Z"/>
+      </g>
+    </svg>
+    <span>Close</span>
+  </div>
 </div>
 
 <script>
@@ -478,7 +598,7 @@
     });
   });
 
-  document.querySelectorAll('.close-btn').forEach(btn => {
+  document.querySelectorAll('.close-bar').forEach(btn => {
     btn.addEventListener('click', () => {
       btn.closest('.overlay').classList.remove('show');
     });
