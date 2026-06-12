@@ -38,10 +38,8 @@
     max-width: 600px;
     margin: 0 auto;
     aspect-ratio: 828 / 578;
-    max-height: 220px;
     background-image: url('header_bg.jpg');
-    background-size: cover;
-    background-position: center bottom;
+    background-size: 100% 100%;
     background-repeat: no-repeat;
     display: flex;
     align-items: flex-end;
@@ -73,8 +71,14 @@
     display: inline-block;
     position: relative;
     bottom: -28px;
-    margin-right: -8px;
+    margin-left: 15px;
+    margin-right: 6px;
     z-index: 5;
+    background: linear-gradient(180deg, #fff8d6 0%, #f3d77e 20%, #d4af37 45%, #a3791f 70%, #f0dca0 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
     filter: drop-shadow(0 10px 8px rgba(0,0,0,0.65));
   }
 
