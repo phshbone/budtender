@@ -454,6 +454,30 @@
   .puff5 { width: 160px; height: 160px; left: 50%; top: 50%; margin-left: 30px;   margin-top: -50px; animation-delay: 1.25s; }
   .puff6 { width: 130px; height: 130px; left: 50%; top: 50%; margin-left: 150px; margin-top: -70px; animation-delay: 1.4s; }
 
+  /* ── MINI FALLBACK (persistent escape hatch) ── */
+  .mini-fallback {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 6;
+    background: rgba(0,0,0,0.7);
+    color: var(--green);
+    font-family: 'SF Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 7px 12px;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+    text-decoration: none;
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+  }
+
+  .mini-fallback.show {
+    display: block;
+  }
+
   /* ── HINT ── */
   .swipe-hint {
     position: absolute;
@@ -523,6 +547,7 @@
     <button class="weight-pill" data-weight="0.5g">0.5g Cart</button>
   </div>
   <div class="swipe-area">
+    <a class="mini-fallback" href="#" target="_blank" rel="noopener">Open in Safari ↗</a>
     <div class="menu-frame-wrap flower">
       <div class="frame-pane flower">
         <iframe loading="lazy" data-src="https://www.kindkushdispensary.com/collection/flower?sort=customMinPriceAsc&page=1&customSize=3.5+G"></iframe>
@@ -708,7 +733,6 @@
 </div>
 
 <script>
-<script>
   // ── SPLASH SCREEN ──
   window.addEventListener('DOMContentLoaded', () => {
     const splash = document.getElementById('splash');
@@ -767,10 +791,20 @@
     fallback.classList.remove('show');
     fallbackLink.href = frame.dataset.src;
 
-    // Dutchie (AYR) and Kind Kush's age-gate both break in iframes — skip straight to fallback
-    if (overlay.dataset.id === 'ayr' || overlay.dataset.id === 'kindkush') {
+    // Dutchie (AYR) blocks iframe embedding silently — skip straight to fallback
+    if (overlay.dataset.id === 'ayr') {
       fallback.classList.add('show');
       return;
+    }
+
+    // Kind Kush's age-gate cookie often fails in-iframe — try iframe,
+    // but show a small persistent escape-hatch link just in case
+    if (overlay.dataset.id === 'kindkush') {
+      const miniLink = overlay.querySelector('.mini-fallback');
+      if (miniLink) {
+        miniLink.href = frame.dataset.src;
+        miniLink.classList.add('show');
+      }
     }
 
     if (!frame.src && frame.dataset.src) {
