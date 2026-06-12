@@ -378,15 +378,14 @@
     z-index: 1000;
     background: #0a0a0a;
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: center;
-    padding-top: 20vh;
     overflow: hidden;
   }
 
   #splash.fade-out {
-    animation: splashFadeOut 1.2s ease forwards;
-    animation-delay: 3.2s;
+    animation: splashFadeOut 0.6s ease forwards;
+    animation-delay: 1.6s;
   }
 
   #splash.hidden {
@@ -411,8 +410,8 @@
       0 1px 0 rgba(255,255,255,0.35),
       0 2px 2px rgba(0,0,0,0.45),
       0 6px 10px rgba(0,0,0,0.55);
-    animation: textDissolve 1.8s ease forwards;
-    animation-delay: 2.2s;
+    animation: textDissolve 0.9s ease forwards;
+    animation-delay: 1.1s;
   }
 
   .splash-text .sB {
@@ -439,7 +438,7 @@
     background: radial-gradient(circle, rgba(180,180,180,0.5) 0%, rgba(120,120,120,0.25) 40%, rgba(80,80,80,0) 75%);
     opacity: 0;
     z-index: 3;
-    animation: puffRise 3.6s ease-out forwards;
+    animation: puffRise 1.8s ease-out forwards;
   }
 
   @keyframes puffRise {
@@ -448,12 +447,12 @@
     100% { opacity: 0; transform: scale(2.4) translateY(-60px); filter: blur(22px); }
   }
 
-  .puff1 { width: 140px; height: 140px; left: 50%; top: 50%; margin-left: -180px; margin-top: -90px; animation-delay: 2.0s; }
-  .puff2 { width: 170px; height: 170px; left: 50%; top: 50%; margin-left: -40px;  margin-top: -110px; animation-delay: 2.3s; }
-  .puff3 { width: 150px; height: 150px; left: 50%; top: 50%; margin-left: 80px;   margin-top: -85px; animation-delay: 2.6s; }
-  .puff4 { width: 190px; height: 190px; left: 50%; top: 50%; margin-left: -90px;  margin-top: -60px; animation-delay: 2.1s; }
-  .puff5 { width: 160px; height: 160px; left: 50%; top: 50%; margin-left: 30px;   margin-top: -50px; animation-delay: 2.5s; }
-  .puff6 { width: 130px; height: 130px; left: 50%; top: 50%; margin-left: 150px; margin-top: -70px; animation-delay: 2.8s; }
+  .puff1 { width: 140px; height: 140px; left: 50%; top: 50%; margin-left: -180px; margin-top: -90px; animation-delay: 1.0s; }
+  .puff2 { width: 170px; height: 170px; left: 50%; top: 50%; margin-left: -40px;  margin-top: -110px; animation-delay: 1.15s; }
+  .puff3 { width: 150px; height: 150px; left: 50%; top: 50%; margin-left: 80px;   margin-top: -85px; animation-delay: 1.3s; }
+  .puff4 { width: 190px; height: 190px; left: 50%; top: 50%; margin-left: -90px;  margin-top: -60px; animation-delay: 1.05s; }
+  .puff5 { width: 160px; height: 160px; left: 50%; top: 50%; margin-left: 30px;   margin-top: -50px; animation-delay: 1.25s; }
+  .puff6 { width: 130px; height: 130px; left: 50%; top: 50%; margin-left: 150px; margin-top: -70px; animation-delay: 1.4s; }
 
   /* ── HINT ── */
   .swipe-hint {
@@ -577,11 +576,11 @@
   <div class="swipe-area">
     <div class="menu-frame-wrap flower">
       <div class="frame-pane flower">
-        <iframe loading="lazy" data-src="https://risecannabis.com/dispensaries/new-jersey/paterson/1317/medical-menu/?refinementList[root_types][]=flower&refinementList[available_weights][]=eighth%20oz"></iframe>
+        <iframe loading="lazy" data-src="https://risecannabis.com/dispensaries/new-jersey/paterson/1317/medical-menu/?refinementList[root_types][]=flower&refinementList[available_weights][]=eighth%20ounce&currentSort=by-price-"></iframe>
       </div>
       <div class="frame-pane vape">
-        <iframe class="w-1g" loading="lazy" data-src="https://risecannabis.com/dispensaries/new-jersey/paterson/1317/medical-menu/?refinementList[root_types][]=vape&refinementList[available_weights][]=1g"></iframe>
-        <iframe class="w-0.5g hidden-frame" loading="lazy" data-src="https://risecannabis.com/dispensaries/new-jersey/paterson/1317/medical-menu/?refinementList[root_types][]=vape&refinementList[available_weights][]=0.5g"></iframe>
+        <iframe class="w-1g" loading="lazy" data-src="https://risecannabis.com/dispensaries/new-jersey/paterson/1317/medical-menu/?refinementList[root_types][]=vape&refinementList[available_weights][]=gram&currentSort=by-price-"></iframe>
+        <iframe class="w-0.5g hidden-frame" loading="lazy" data-src="https://risecannabis.com/dispensaries/new-jersey/paterson/1317/medical-menu/?refinementList[root_types][]=vape&refinementList[available_weights][]=half%20gram&currentSort=by-price-"></iframe>
       </div>
     </div>
     <div class="fallback">
@@ -709,13 +708,14 @@
 </div>
 
 <script>
+<script>
   // ── SPLASH SCREEN ──
   window.addEventListener('DOMContentLoaded', () => {
     const splash = document.getElementById('splash');
     splash.classList.add('fade-out');
     setTimeout(() => {
       splash.classList.add('hidden');
-    }, 4500);
+    }, 2300);
   });
 
   // ── OPEN / CLOSE OVERLAYS ──
