@@ -371,6 +371,89 @@
     display: block;
   }
 
+  /* ══════════════ SPLASH SCREEN ══════════════ */
+  #splash {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: #0a0a0a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  #splash.fade-out {
+    animation: splashFadeOut 0.6s ease forwards;
+    animation-delay: 1.6s;
+  }
+
+  #splash.hidden {
+    display: none;
+  }
+
+  @keyframes splashFadeOut {
+    to { opacity: 0; visibility: hidden; }
+  }
+
+  .splash-text {
+    position: relative;
+    line-height: 1;
+    font-size: 64px;
+    z-index: 2;
+    background: linear-gradient(180deg, #fff8d6 0%, #f3d77e 20%, #d4af37 45%, #a3791f 70%, #f0dca0 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    text-shadow:
+      0 1px 0 rgba(255,255,255,0.35),
+      0 2px 2px rgba(0,0,0,0.45),
+      0 6px 10px rgba(0,0,0,0.55);
+    animation: textDissolve 0.9s ease forwards;
+    animation-delay: 1.1s;
+  }
+
+  .splash-text .sB {
+    font-family: 'Alex Brush', cursive;
+    font-size: 1.5em;
+    margin-right: 4px;
+  }
+
+  .splash-text .sRest {
+    font-family: 'Tangerine', cursive;
+    font-weight: 700;
+    font-size: 1.25em;
+  }
+
+  @keyframes textDissolve {
+    0%   { opacity: 1; filter: blur(0px); letter-spacing: 1px; }
+    100% { opacity: 0; filter: blur(14px); letter-spacing: 10px; }
+  }
+
+  /* Smoke puffs */
+  .puff {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(180,180,180,0.5) 0%, rgba(120,120,120,0.25) 40%, rgba(80,80,80,0) 75%);
+    opacity: 0;
+    z-index: 3;
+    animation: puffRise 1.8s ease-out forwards;
+  }
+
+  @keyframes puffRise {
+    0%   { opacity: 0; transform: scale(0.3) translateY(0); filter: blur(2px); }
+    15%  { opacity: 0.55; }
+    100% { opacity: 0; transform: scale(2.4) translateY(-60px); filter: blur(22px); }
+  }
+
+  .puff1 { width: 140px; height: 140px; left: 50%; top: 50%; margin-left: -180px; margin-top: -90px; animation-delay: 1.0s; }
+  .puff2 { width: 170px; height: 170px; left: 50%; top: 50%; margin-left: -40px;  margin-top: -110px; animation-delay: 1.15s; }
+  .puff3 { width: 150px; height: 150px; left: 50%; top: 50%; margin-left: 80px;   margin-top: -85px; animation-delay: 1.3s; }
+  .puff4 { width: 190px; height: 190px; left: 50%; top: 50%; margin-left: -90px;  margin-top: -60px; animation-delay: 1.05s; }
+  .puff5 { width: 160px; height: 160px; left: 50%; top: 50%; margin-left: 30px;   margin-top: -50px; animation-delay: 1.25s; }
+  .puff6 { width: 130px; height: 130px; left: 50%; top: 50%; margin-left: 150px; margin-top: -70px; animation-delay: 1.4s; }
+
   /* ── HINT ── */
   .swipe-hint {
     position: absolute;
@@ -390,6 +473,16 @@
 </style>
 </head>
 <body>
+
+<div id="splash">
+  <div class="splash-text"><span class="sB">B</span><span class="sRest">udtender</span></div>
+  <div class="puff puff1"></div>
+  <div class="puff puff2"></div>
+  <div class="puff puff3"></div>
+  <div class="puff puff4"></div>
+  <div class="puff puff5"></div>
+  <div class="puff puff6"></div>
+</div>
 
 <header>
   <div class="logo"><span class="dropcap">B</span><span class="rest">udtender</span></div>
@@ -615,6 +708,16 @@
 </div>
 
 <script>
+<script>
+  // ── SPLASH SCREEN ──
+  window.addEventListener('DOMContentLoaded', () => {
+    const splash = document.getElementById('splash');
+    splash.classList.add('fade-out');
+    setTimeout(() => {
+      splash.classList.add('hidden');
+    }, 2300);
+  });
+
   // ── OPEN / CLOSE OVERLAYS ──
   document.querySelectorAll('.plate-btn').forEach(plate => {
     plate.addEventListener('click', () => {
