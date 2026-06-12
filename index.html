@@ -547,7 +547,6 @@
     <button class="weight-pill" data-weight="0.5g">0.5g Cart</button>
   </div>
   <div class="swipe-area">
-    <a class="mini-fallback" href="#" target="_blank" rel="noopener">Open in Safari ↗</a>
     <div class="menu-frame-wrap flower">
       <div class="frame-pane flower">
         <iframe loading="lazy" data-src="https://www.kindkushdispensary.com/collection/flower?sort=customMinPriceAsc&page=1&customSize=3.5+G"></iframe>
@@ -792,19 +791,10 @@
     fallbackLink.href = frame.dataset.src;
 
     // Dutchie (AYR) blocks iframe embedding silently — skip straight to fallback
-    if (overlay.dataset.id === 'ayr') {
+    // Kind Kush's age-gate cookie fails in-iframe on iOS — skip straight to fallback
+    if (overlay.dataset.id === 'ayr' || overlay.dataset.id === 'kindkush') {
       fallback.classList.add('show');
       return;
-    }
-
-    // Kind Kush's age-gate cookie often fails in-iframe — try iframe,
-    // but show a small persistent escape-hatch link just in case
-    if (overlay.dataset.id === 'kindkush') {
-      const miniLink = overlay.querySelector('.mini-fallback');
-      if (miniLink) {
-        miniLink.href = frame.dataset.src;
-        miniLink.classList.add('show');
-      }
     }
 
     if (!frame.src && frame.dataset.src) {
