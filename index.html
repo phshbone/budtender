@@ -664,6 +664,12 @@
     fallback.classList.remove('show');
     fallbackLink.href = frame.dataset.src;
 
+    // Dutchie (AYR) blocks iframe embedding silently — skip straight to fallback
+    if (overlay.dataset.id === 'ayr') {
+      fallback.classList.add('show');
+      return;
+    }
+
     if (!frame.src && frame.dataset.src) {
       frame.src = frame.dataset.src;
       frame.addEventListener('error', () => fallback.classList.add('show'));
