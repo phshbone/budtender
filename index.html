@@ -427,8 +427,8 @@
   }
 
   @keyframes textDissolve {
-    0%   { opacity: 1; filter: blur(0px); letter-spacing: 1px; }
-    100% { opacity: 0; filter: blur(14px); letter-spacing: 10px; }
+    0%   { opacity: 1; filter: blur(0px); letter-spacing: 1px; transform: translateY(0); }
+    100% { opacity: 0; filter: blur(14px); letter-spacing: 10px; transform: translateY(-70px); }
   }
 
   /* Smoke puffs */
@@ -444,7 +444,7 @@
   @keyframes puffRise {
     0%   { opacity: 0; transform: scale(0.3) translateY(0); filter: blur(2px); }
     15%  { opacity: 0.55; }
-    100% { opacity: 0; transform: scale(2.4) translateY(-60px); filter: blur(22px); }
+    100% { opacity: 0; transform: scale(2.4) translateY(-100px); filter: blur(22px); }
   }
 
   .puff1 { width: 140px; height: 140px; left: 50%; top: 50%; margin-left: -180px; margin-top: -90px; animation-delay: 1.0s; }
@@ -708,7 +708,7 @@
 </div>
 
 <script>
-
+<script>
   // ── SPLASH SCREEN ──
   window.addEventListener('DOMContentLoaded', () => {
     const splash = document.getElementById('splash');
@@ -767,8 +767,8 @@
     fallback.classList.remove('show');
     fallbackLink.href = frame.dataset.src;
 
-    // Dutchie (AYR) blocks iframe embedding silently — skip straight to fallback
-    if (overlay.dataset.id === 'ayr') {
+    // Dutchie (AYR) and Kind Kush's age-gate both break in iframes — skip straight to fallback
+    if (overlay.dataset.id === 'ayr' || overlay.dataset.id === 'kindkush') {
       fallback.classList.add('show');
       return;
     }
