@@ -1,7 +1,5 @@
 {
   "last_updated": "Waiting for first scrape...",
-  "store": "AYR — Union Medical",
-  "store_url": "https://ayrdispensaries.com/stores/ayr-nj-union-med",
   "filters": {
     "program": "medical",
     "categories": ["Flower", "Vape"],
@@ -9,6 +7,24 @@
     "vape_size": "1g",
     "sort": "price_low_to_high"
   },
+  "stores": [
+    {
+      "name": "AYR — Union Medical",
+      "program": "medical",
+      "store_url": "https://ayrdispensaries.com/stores/ayr-nj-union-med",
+      "menu_urls": ["https://app.jointcommerce.com/dispensaries/6090/"]
+    },
+    {
+      "name": "RISE — Paterson Medical",
+      "program": "medical",
+      "store_url": "https://risecannabis.com/dispensaries/new-jersey/paterson/1317/medical-menu/",
+      "menu_urls": [
+        "https://risecannabis.com/dispensaries/new-jersey/paterson/1317/medical-menu/?refinementList[root_types][]=flower&refinementList[available_weights][]=eighth%20ounce&currentSort=price-asc",
+        "https://risecannabis.com/dispensaries/new-jersey/paterson/1317/medical-menu/?refinementList[root_types][]=vape&refinementList[available_weights][]=gram&currentSort=price-asc"
+      ]
+    }
+  ],
+  "summary_by_store": {},
   "total_deals": 0,
   "products": [],
   "errors": []
