@@ -1,6 +1,15 @@
 {
   "last_updated": "Waiting for first scrape...",
-  "max_price": 20,
+  "store": "AYR — Union Medical",
+  "store_url": "https://ayrdispensaries.com/stores/ayr-nj-union-med",
+  "filters": {
+    "program": "medical",
+    "categories": ["Flower", "Vape"],
+    "flower_size": "3.5g / 1/8",
+    "vape_size": "1g",
+    "sort": "price_low_to_high"
+  },
   "total_deals": 0,
-  "products": []
+  "products": [],
+  "errors": []
 }
